@@ -23,16 +23,17 @@ function SmartValidator(container, opts) {
             validClass: 'glyphicon-ok',
             invalidClass: 'glyphicon-exclamation-sign',
             required: '<span class="error glyphicon glyphicon-exclamation-sign"></span>',
-            validation: '<span class="validation" style="display:none;">{0}</span>'
+            validation: '<span class="validation" style="display:none;">{0}</span>',
+            okSign: '&#x2714', // HTML ASCII check mark
+            warningSign: '&#x2757' // HTML ASCII exclamation point
         }
     };
 
-    this.$dom.extend(this.settings, opts);
+    this.$utils.extend(this.settings, opts);
     
     this.isComplete = false;
 
     this.intervalId = setInterval(function () {
-        self.checkIncomplete();
         self.checkRequiredFields();
         self.validateFields();
     }, this.settings.interval);
@@ -40,7 +41,7 @@ function SmartValidator(container, opts) {
 
 SmartValidator.prototype = {
     
-    $dom: {
+    $utils: {
         each: function (a, callback, i) {
             i = i || 0;
             for (; i < a.length; i++) {
@@ -92,25 +93,6 @@ SmartValidator.prototype = {
             return el;
         },
         
-        first: function (o, tag) {
-            if (tag) { return o.getElementsByTagName(tag)[0]; }
-            return (o && o.nodeType != 1) ? this.next(o) : o;
-        },
-
-        next: function (o) {
-            do {
-                o = o.nextSibling;
-            } while (o && o.nodeType != 1);
-            return o;
-        },
-
-        prev: function prev(o) {
-            do {
-                o = o.previousSibling;
-            } while (o && o.nodeType != 1);
-            return o;
-        },
-
         extend: function (first, second) {
             for (var prop in second) {
                 first[prop] = second[prop];
@@ -132,58 +114,6 @@ SmartValidator.prototype = {
                 o.insertBefore(document.createTextNode(content), firstChild);
             }
             return o;
-        },
-
-        append: function (o, content, isHtml) {
-            if (typeof (content) != 'string') {
-                o.appendChild(content);
-            }
-            else if (!!isHtml) {
-                var temp = document.createElement('div');
-                temp.innerHTML = content;
-                o.appendChild(temp.firstChild);
-            }
-            else {
-                o.appendChild(document.createTextNode(content));
-            }
-            return o;
-        },
-        
-        parent: function (o, num) {
-            num = num || 1;
-            for (var i = 0; i < num; i++) {
-                if (o != null) {
-                    o = o.parentNode;
-                }
-            }
-            return o;
-        },
-        
-        closest: function (o, tagName) {
-            tagName = tagName.toLowerCase();
-            var parentNode = this.parent(o);
-            do {
-                parentNode = this.parentNode(parentNode);
-            }
-            while(parentNode && parentNode.tagName.toLowerCase() != tagName);     
-            return parentNode;
-        },
-
-        before: function (parent, before, o) {
-            if (o == null) {
-                o = before;
-                before = parent;
-                parent = before.parentNode;
-            }
-            parent.insertBefore(o, before);
-            return o;
-        },
-
-        attr: function (o, attr) {
-            if(!!o[attr]){
-                return o[attr];
-            }
-            return o.getAttribute(attr);
         },
 
         show: function (el) {
@@ -218,19 +148,19 @@ SmartValidator.prototype = {
         getValue: function (el, container) {
             var self = this;
             container = container || document.body;
-            var tagName = el.tagName.toLowerCase();
             var val = '';
         
             if (el.type == 'checkbox') {
                 val = el.checked ? 'true' : '';
             } else {
+                //textarea, input, and select
                 val = this.trim(el.value);
             }
             return val;
         },
 
-        needsValue: function(el) {
-            return this.getValue(el) == '';
+        needsValue: function (el, container) {
+            return this.getValue(el, container) == '';
         }
     },
     
@@ -238,9 +168,16 @@ SmartValidator.prototype = {
     
     checkRequiredFields: function () {
         var self = this;
-        var $ = this.$dom;
+        var $ = this.$utils;
         var required = this.container.querySelectorAll(self.settings.selector);
         var templates = this.settings.templates;
+        var totalRequired = 0;
+        var totalIncomplete = 0;
+        var complete = false;
+        var incompleteCount = $.filter(required,
+            function (el) {
+                return $.needsValue(el, self.container);
+            }).length;
 
         $.each(required, function (el) {
             if (!!!el.$$error) {
@@ -250,38 +187,30 @@ SmartValidator.prototype = {
             if ($.getValue(el) == '') {
                 $.removeClass(el.$$error, templates.validClass);
                 $.addClass(el.$$error, templates.invalidClass);
-                el.$$error.innerHTML = '&#x2757';
+                el.$$error.innerHTML = templates.warningSign;
             }
             else {
                 $.removeClass(el.$$error, templates.invalidClass);
                 $.addClass(el.$$error, templates.validClass);
-                el.$$error.innerHTML = '&#x2714';
+                el.$$error.innerHTML = templates.okSign;
             }
         });
+
+        totalRequired = required.length;
+        complete = totalRequired - incompleteCount == totalRequired;
+        this.isComplete = complete;
+        this.settings.callback(complete, totalRequired, incompleteCount, self);
     },
     
     checkIncomplete: function () {
         var self = this;
-        var $ = this.$dom;
-        var totalRequired = 0;
-        var totalIncomplete = 0;
-        var complete = false;
-        var requiredFields = this.container.querySelectorAll(this.settings.selector);
-        var incompleteCount = $.filter(requiredFields,
-            function (el) {
-                return $.getValue(el, self.container) == '';
-            }).length;
-
-        totalRequired = requiredFields.length;
-        totalIncomplete = incompleteCount;
-        complete = totalRequired - totalIncomplete == totalRequired;
-        this.isComplete = complete;
-        this.settings.callback(complete, totalRequired, totalIncomplete, self);
+        var $ = this.$utils;
+       
     },
     
     validateFields: function () {
         var self = this;
-        var $ = this.$dom;
+        var $ = this.$utils;
         var inputs = this.container.querySelectorAll('input.email,input.phone,input.ssn,input.zip,input.date');
         
         $.each(inputs, function (el) {
@@ -305,7 +234,7 @@ SmartValidator.prototype = {
     },
 
     validatePattern: function(value, type) {
-        var $ = this.$dom;
+        var $ = this.$utils;
 
         if (!!!value) {
             return false;

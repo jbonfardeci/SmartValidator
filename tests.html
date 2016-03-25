@@ -74,10 +74,10 @@
 
                 callback: function (complete, totalRequired, totalIncomplete, val) {
                     if (complete) {
-                        val.$dom.show(d.querySelector('#form_container .btn-submit'));
+                        val.$utils.show(d.querySelector('#form_container .btn-submit'));
                     }
                     else {
-                        val.$dom.hide(d.querySelector('#form_container .btn-submit'));
+                        val.$utils.hide(d.querySelector('#form_container .btn-submit'));
                         //console.warn(arguments);
                     }
                 },

@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+        .error{
+            color: #f00;
+            font-weight: bold;
+        }
+        .glyphicon-ok, .glyphicon-exclamation-sign{
+            margin:0 .5em;
+            color: #fff;
+             display:inline-block;
+            border-radius: 9px;
+            text-align:center;
+            padding: 1px 7px;
+            font-size: .8em;
+        }
+        .glyphicon-exclamation-sign{         
+            background-color:#f00;          
+        }
+        .glyphicon-ok{
+            background-color:#62a02c;
+            padding: 1px 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="form_container">
+        <div>
+            <label>Input 1</label>
+            <input type="text" name="input1" id="input1" required />
+        </div>
+        <div>
+            <label>Input 2</label>
+            <input type="text" name="input2" id="input2" value="test" required />
+        </div>
+        <div>
+            <label>Select 1</label>
+            <select name="select1" id="select1" required>
+                <option value="">--Select--</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+        </div>
+        <div>
+            <label>Textarea 1</label>
+            <textarea name="textarea1" required>test</textarea>
+        </div>
+        <div>
+            <label>Radio Group</label>
+            <label><input type="radio" name="radio1" value="0" /> Option 1</label>
+            <label><input type="radio" name="radio1" value="1" /> Option 2</label>
+            <label><input type="radio" name="radio1" value="2" /> Option 3</label>
+        </div>
+        <div>
+            <label>Checkbox 1</label>
+            <input type="checkbox" name="checkbox1" required />
+        </div>
+        <div>
+            <button class="btn btn-submit">Submit</button>
+        </div>
+    </form>
+
+    <script src="smart.validator.js"></script>
+    <script>
+        (function (w, d) {
+            var sv = new SmartValidator('form_container', {
+                selector: '*[required]',
+
+                callback: function (complete, totalRequired, totalIncomplete, val) {
+                    if (complete) {
+                        val.$dom.show(d.querySelector('#form_container .btn-submit'));
+                    }
+                    else {
+                        val.$dom.hide(d.querySelector('#form_container .btn-submit'));
+                        //console.warn(arguments);
+                    }
+                },
+
+                interval: 500
+            });
+
+        })(window, document);
+    </script>
+</body>
+</html>

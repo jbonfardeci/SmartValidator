@@ -3,32 +3,42 @@ A JavaScript validator that works with dynamic form elements created by MV* fram
 
 ##Usage
 ```
-// Example options overrides
-var opts = {
-    // Override for required input selector
-    // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
-    selector: '*[required]',
-
-    // Some action to take when the form is complete/valid.
-    callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
-        // Show the Submit button if th eform is complete.
-        if (complete) {
-            $smartValidator.$utils.show(d.querySelector('#form_container .btn-submit'));
-        }
-        else {
-            $smartValidator.$utils.hide(d.querySelector('#form_container .btn-submit'));
-        }
-    },
-
-    // The interval (in milliseconds) to run the validator
-    interval: 100
-};
-
 // For Angular frameworks, inject `$smartValidator` into your controller 
-// and call the `init` method with the form ID or form element, plus optional setting overrides.
-// For example:
+// and call the `init` method with the form ID or form element reference, plus optional settings overrides.
+// For example we inject $smartValidator into an Angular controller:
 angular.module('app', ['smart.validator'])
-    .controller('testCtrl', ['$smartValidator', function($smartValidator){
+
+    .controller('contactCtrl', ['$scope', '$smartValidator', function($scope, $smartValidator){
+        
+        $scope.favNumbers = ['42', 'Phi', 'Pi', 'Primes', 'Avogadro\'s'];
+        $scope.FullName = null;
+        $scope.Email = null;
+        $scope.FavoriteNumber = $scope.favNumbers[0];
+        $scope.Agreement = false;
+        $scope.Stack = null;
+        $scope.Classification = null;
+        $scope.complete = false;
+        
+        $scope.submit = function(){
+            // Submit form data
+            return false;    
+        };
+        
+        // Example options overrides
+        var opts = {
+            // Overrides for required input selector
+            // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
+            selector: '*[required]',
+
+            // Some action to take when the form is complete/valid.
+            callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
+                // Show the Submit button if the form is complete.
+                $scope.complete = complete;
+            },
+
+            // The interval (in milliseconds) to run the validator
+            interval: 100
+        };
         
         // Initialize the validator
         $smartValidator.init('form_container', opts);
@@ -36,8 +46,10 @@ angular.module('app', ['smart.validator'])
     }]);
 
 // Simply instantiate `SmartValidator` for non-Angular frameworks
-//var sv = new SmartValidator();
-//sv.init('form_container', opts);
+if(!angular){
+    //var sv = new SmartValidator();
+    //sv.init(/*element/id*/'form_container', /*opts:*/ {});
+}
 ```
 
 ###Example Form

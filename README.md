@@ -36,7 +36,7 @@ angular.module('app', ['smart.validator'])
     }]);
 
 // Simply instantiate `SmartValidator` for non-Angular frameworks
-//var sv = new SmartValidator('form_container');
+//var sv = new SmartValidator();
 //sv.init('form_container', opts);
 ```
 

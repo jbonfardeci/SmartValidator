@@ -57,7 +57,7 @@ function SmartValidator($interval) {
             validClass: 'glyphicon-ok',
             invalidClass: 'glyphicon-exclamation-sign',
             required: '<span class="error glyphicon glyphicon-exclamation-sign"></span>',
-            validation: '<span class="validation" style="display:none;">{0}</span>',
+            validation: '<span class="error validation" style="display:none;">{0}</span>',
             okSign: '&#x2714', // HTML ASCII check mark
             warningSign: '&#x2757' // HTML ASCII exclamation point
         }
@@ -84,12 +84,15 @@ SmartValidator.prototype = {
         if (opts === void 0) { opts = {}; }
         
         var self = this;
-        this.$utils.extend(this.settings, opts);
+        
+        for(var p in opts){
+            this.settings[p] =opts[p];
+        }
+        
         this.container = this.$utils.id(container);
 
         return this.$interval(function () {
-            self.checkRequiredFields();
-            self.validateFields();
+            self.checkRequiredFields(self);
         }, this.settings.interval);
     },
 
@@ -152,22 +155,6 @@ SmartValidator.prototype = {
             return first;
         },
 
-        prepend: function (o, content, isHtml) {
-            var firstChild = o.firstChild;
-            if (typeof (content) != 'string') {
-                o.insertBefore(content, firstChild);
-            }
-            else if (!!isHtml) {
-                var temp = document.createElement('div');
-                temp.innerHTML = content;
-                o.insertBefore(this.first(temp), firstChild);
-            }
-            else {
-                o.insertBefore(document.createTextNode(content), firstChild);
-            }
-            return o;
-        },
-
         show: function (el) {
             el.style.display = null;
             return el;
@@ -218,11 +205,11 @@ SmartValidator.prototype = {
     
     rxValidators: /\b(email|phone|ssn|zip|date)\b/,
     
-    checkRequiredFields: function () {
-        var self = this;
+    checkRequiredFields: function (self) {
+        if(self === void 0){ self = this; }
         var $ = this.$utils;
         var required = this.container.querySelectorAll(self.settings.selector);
-        var templates = this.settings.templates;
+        var templates = self.settings.templates;
         var totalRequired = 0;
         var totalIncomplete = 0;
         var complete = false;
@@ -230,6 +217,7 @@ SmartValidator.prototype = {
             function (el) {
                 return $.needsValue(el, self.container);
             }).length;
+        var isValid = self.validateFields(self);
 
         $.each(required, function (el) {
             if (!!!el.$$error) {
@@ -239,25 +227,23 @@ SmartValidator.prototype = {
             if ($.getValue(el) == '') {
                 $.removeClass(el.$$error, templates.validClass);
                 $.addClass(el.$$error, templates.invalidClass);
-                el.$$error.innerHTML = templates.warningSign;
             }
             else {
                 $.removeClass(el.$$error, templates.invalidClass);
                 $.addClass(el.$$error, templates.validClass);
-                el.$$error.innerHTML = templates.okSign;
             }
         });
 
         totalRequired = required.length;
-        complete = totalRequired - incompleteCount == totalRequired;
-        this.isComplete = complete;
+        complete = (totalRequired - incompleteCount == totalRequired) && isValid;
         this.settings.callback(complete, totalRequired, incompleteCount, self);
     },
     
-    validateFields: function () {
-        var self = this;
+    validateFields: function (self) {
+        if(self === void 0){ self = this; }
+        var errorCt = 0;
         var $ = this.$utils;
-        var inputs = this.container.querySelectorAll('input.email,input.phone,input.ssn,input.zip,input.date');
+        var inputs = self.container.querySelectorAll('input.email,input.phone,input.ssn,input.zip,input.date');
         
         $.each(inputs, function (el) {
             var val = el.value;
@@ -267,16 +253,19 @@ SmartValidator.prototype = {
             });
 
             if (!!!el.$$validation) {
-                el.$$validation = $.after(self.templates.validation.replace(/\{0\}/g, invalidText), el);
+                el.$$validation = $.after(self.settings.templates.validation.replace(/\{0\}/g, invalidText), el);
             }
 
-            if (!validatePattern(val, validator) && !!val) {
+            if (!self.validatePattern(val, validator) && !!val) {
                 $.show(el.$$validation);
+                errorCt += 1;
             }
             else {
                 $.hide(el.$$validation);
             }
         });
+        
+        return errorCt == 0;
     },
 
     validatePattern: function(value, type) {

@@ -3,46 +3,65 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
-    <link href="smart.validator.css" rel="stylesheet" />
+    <title>Smart Validator for Angular Forms</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .error{ color: #f00;display: inline-block; margin:0 .5em;}
+        .error.glyphicon-ok{
+            color: green !important;
+        }
+        .form-control{
+            display: inline-block;
+            max-width: 80%;
+        }
+    </style>
 </head>
 <body ng-app="app">
 
-    <div ng-controller="testCtrl">
+    <div ng-controller="contactCtrl" class="container">
+        <h4>Example Form with Smart Validator for AngularJS</h4>
+        <p><span class="error glyphicon glyphicon-exclamation-sign"></span> indicates required fields.</p>
         <form id="form_container">
-            <div>
-                <label>Input 1</label>
-                <input type="text" name="input1" id="input1" required />
+            <div class="form-group">
+                <label class="control-label" for="FullName">Your Full Name:</label>
+                <input type="text" ng-model="FullName" id="FullName" placeholder="Your Full Name" class="form-control" required />
             </div>
-            <div>
-                <label>Input 2</label>
-                <input type="text" name="input2" id="input2" value="test" required />
+            <div class="form-group">
+                <label class="control-label" for="Email">Email:</label>
+                <input type="email" ng-model="Email" id="Email" placeholder="Email" class="form-control email" required />
             </div>
-            <div>
-                <label>Select 1</label>
-                <select name="select1" id="select1" required>
+            <div class="form-group">
+                <label class="control-label" for="Classification">I classify myself as a:</label>
+                <select ng-model="Classification" id="Classification" class="form-control" required>
                     <option value="">--Select--</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                    <option>Developer</option>
+                    <option>DevOps</option>
+                    <option>Full-Stack Web Developer</option>
+                    <option>Software Engineer</option>
+                    <option>Web Developer</option>    
                 </select>
             </div>
-            <div>
-                <label>Textarea 1</label>
-                <textarea name="textarea1" required>test</textarea>
+            <div class="form-group">
+                <label class="control-label" for="Stack">Your Stack:</label><br/>
+                <textarea ng-model="Stack" id="Stack" required>test</textarea>
             </div>
-            <div>
-                <label>Radio Group</label>
-                <label><input type="radio" name="radio1" value="0" /> Option 1</label>
-                <label><input type="radio" name="radio1" value="1" /> Option 2</label>
-                <label><input type="radio" name="radio1" value="2" /> Option 3</label>
+            <div class="form-group">
+                <label class="control-label">Fovorite Number:</label>
+                <ul class="list-group" style="max-width:200px;">
+                    <li class="list-group-item" ng-repeat="n in favNumbers">
+                        <input type="radio" ng-model="FavoriteNumber" name="FavoriteNumber"  /> {{n}}
+                    </li>
+                </ul>
             </div>
-            <div>
-                <label>Checkbox 1</label>
-                <input type="checkbox" name="checkbox1" required />
+            <div class="form-group">
+                <label class="control-label" for="Agreement">I agree to no terms whatsoever.</label>
+                <input type="checkbox" ng-model="Agreement" id="Agreement" required />
             </div>
-            <div>
-                <button class="btn btn-submit">Submit</button>
+            <div ng-if="!complete">
+                <p class="alert alert-danger">You must complete all required fields before submitting your form.</p>
+            </div>
+            <div ng-if="complete" class="form-action">
+                <button ng-click="submit" class="btn btn-danger btn-submit">Submit</button>
             </div>
         </form>
     </div>
@@ -53,33 +72,43 @@
     
     <script>
         (function (w, d) {
-            
-            // Example options overrides
-            var opts = {
-                // Override for required input selector
-                // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
-                selector: '*[required]',
 
-                // Some action to take when the form is complete/valid.
-                callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
-                    // Show the Submit button if th eform is complete.
-                    if (complete) {
-                        $smartValidator.$utils.show(d.querySelector('#form_container .btn-submit'));
-                    }
-                    else {
-                        $smartValidator.$utils.hide(d.querySelector('#form_container .btn-submit'));
-                    }
-                },
-
-                // The interval (in milliseconds) to run the validator
-                interval: 100
-            };
-            
             // For Angular frameworks, inject `$smartValidator` into your controller 
-            // and call the `init` method with the form ID or form element, plus optional setting overrides.
-            // For example:
+            // and call the `init` method with the form ID or form element reference, plus optional settings overrides.
+            // For example we inject $smartValidator into an Angular controller:
             angular.module('app', ['smart.validator'])
-                .controller('testCtrl', ['$smartValidator', function($smartValidator){
+            
+                .controller('contactCtrl', ['$scope', '$smartValidator', function($scope, $smartValidator){
+                    
+                    $scope.favNumbers = ['42', 'Phi', 'Pi', 'Primes', 'Avagadro\'s'];
+                    $scope.FullName = null;
+                    $scope.Email = null;
+                    $scope.FavoriteNumber = null;
+                    $scope.Agreement = false;
+                    $scope.Stack = null;
+                    $scope.Classification = null;
+                    $scope.complete = false;
+                    
+                    $scope.submit = function(){
+                        // Submit form data
+                        return false;    
+                    };
+                    
+                    // Example options overrides
+                    var opts = {
+                        // Overrides for required input selector
+                        // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
+                        selector: '*[required]',
+
+                        // Some action to take when the form is complete/valid.
+                        callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
+                            // Show the Submit button if the form is complete.
+                            $scope.complete = complete;
+                        },
+
+                        // The interval (in milliseconds) to run the validator
+                        interval: 100
+                    };
                     
                     // Initialize the validator
                     $smartValidator.init('form_container', opts);
@@ -87,8 +116,10 @@
                 }]);
             
             // Simply instantiate `SmartValidator` for non-Angular frameworks
-            //var sv = new SmartValidator();
-            //sv.init('form_container', opts);
+            if(!angular){
+                //var sv = new SmartValidator();
+                //sv.init(/*element/id*/'form_container', /*opts:*/ {});
+            }
 
         })(window, document);
     </script>

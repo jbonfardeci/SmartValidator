@@ -40,6 +40,8 @@ angular.module('app', ['smart.validator'])
 //sv.init('form_container', opts);
 ```
 
+###Example Form
+![Example Form](sample_form.png "Example Form")
 
 ###Copyright
 The MIT License (MIT)

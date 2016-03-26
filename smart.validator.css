@@ -1,0 +1,20 @@
+.error{
+    color: rgb(189, 63, 66);
+    font-weight: bold;
+}
+.glyphicon-ok, .glyphicon-exclamation-sign{
+    margin:0 .5em;
+    color: #fff;
+        display:inline-block;
+    border-radius: 9px;
+    text-align:center;
+    padding: 1px 7px;
+    font-size: .8em;
+}
+.glyphicon-exclamation-sign{         
+    background-color:rgb(189, 63, 66);          
+}
+.glyphicon-ok{
+    background-color:green;
+    padding: 1px 5px;
+}

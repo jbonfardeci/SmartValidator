@@ -4,28 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <style type="text/css">
-        .error{
-            color: rgb(189, 63, 66);
-            font-weight: bold;
-        }
-        .glyphicon-ok, .glyphicon-exclamation-sign{
-            margin:0 .5em;
-            color: #fff;
-             display:inline-block;
-            border-radius: 9px;
-            text-align:center;
-            padding: 1px 7px;
-            font-size: .8em;
-        }
-        .glyphicon-exclamation-sign{         
-            background-color:rgb(189, 63, 66);          
-        }
-        .glyphicon-ok{
-            background-color:green;
-            padding: 1px 5px;
-        }
-    </style>
+    <link href="smart.validator.css" rel="stylesheet" />
 </head>
 <body ng-app="app">
 
@@ -75,6 +54,7 @@
     <script>
         (function (w, d) {
             
+            // Example options overrides
             var opts = {
                 // Override for required input selector
                 // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
@@ -95,18 +75,20 @@
                 interval: 100
             };
             
-            // Our test Angular app
-            angular.module('app', ['app.controllers', 'smart.validator']);
-            
             // For Angular frameworks, inject `$smartValidator` into your controller 
             // and call the `init` method with the form ID or form element, plus optional setting overrides.
-            angular.module('app.controllers', [])
+            // For example:
+            angular.module('app', ['smart.validator'])
                 .controller('testCtrl', ['$smartValidator', function($smartValidator){
+                    
+                    // Initialize the validator
                     $smartValidator.init('form_container', opts);
+                    
                 }]);
             
             // Simply instantiate `SmartValidator` for non-Angular frameworks
-            // var sv = new SmartValidator('form_container', opts);
+            //var sv = new SmartValidator('form_container');
+            //sv.init('form_container', opts);
 
         })(window, document);
     </script>

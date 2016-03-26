@@ -6,7 +6,7 @@
     <title></title>
     <style type="text/css">
         .error{
-            color: #f00;
+            color: rgb(189, 63, 66);
             font-weight: bold;
         }
         .glyphicon-ok, .glyphicon-exclamation-sign{
@@ -19,71 +19,94 @@
             font-size: .8em;
         }
         .glyphicon-exclamation-sign{         
-            background-color:#f00;          
+            background-color:rgb(189, 63, 66);          
         }
         .glyphicon-ok{
-            background-color:#62a02c;
+            background-color:green;
             padding: 1px 5px;
         }
     </style>
 </head>
-<body>
+<body ng-app="app">
 
-    <form id="form_container">
-        <div>
-            <label>Input 1</label>
-            <input type="text" name="input1" id="input1" required />
-        </div>
-        <div>
-            <label>Input 2</label>
-            <input type="text" name="input2" id="input2" value="test" required />
-        </div>
-        <div>
-            <label>Select 1</label>
-            <select name="select1" id="select1" required>
-                <option value="">--Select--</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>
-        </div>
-        <div>
-            <label>Textarea 1</label>
-            <textarea name="textarea1" required>test</textarea>
-        </div>
-        <div>
-            <label>Radio Group</label>
-            <label><input type="radio" name="radio1" value="0" /> Option 1</label>
-            <label><input type="radio" name="radio1" value="1" /> Option 2</label>
-            <label><input type="radio" name="radio1" value="2" /> Option 3</label>
-        </div>
-        <div>
-            <label>Checkbox 1</label>
-            <input type="checkbox" name="checkbox1" required />
-        </div>
-        <div>
-            <button class="btn btn-submit">Submit</button>
-        </div>
-    </form>
-
+    <div ng-controller="testCtrl">
+        <form id="form_container">
+            <div>
+                <label>Input 1</label>
+                <input type="text" name="input1" id="input1" required />
+            </div>
+            <div>
+                <label>Input 2</label>
+                <input type="text" name="input2" id="input2" value="test" required />
+            </div>
+            <div>
+                <label>Select 1</label>
+                <select name="select1" id="select1" required>
+                    <option value="">--Select--</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                </select>
+            </div>
+            <div>
+                <label>Textarea 1</label>
+                <textarea name="textarea1" required>test</textarea>
+            </div>
+            <div>
+                <label>Radio Group</label>
+                <label><input type="radio" name="radio1" value="0" /> Option 1</label>
+                <label><input type="radio" name="radio1" value="1" /> Option 2</label>
+                <label><input type="radio" name="radio1" value="2" /> Option 3</label>
+            </div>
+            <div>
+                <label>Checkbox 1</label>
+                <input type="checkbox" name="checkbox1" required />
+            </div>
+            <div>
+                <button class="btn btn-submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Angular -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js"></script>
     <script src="smart.validator.js"></script>
+    
     <script>
         (function (w, d) {
-            var sv = new SmartValidator('form_container', {
+            
+            var opts = {
+                // Override for required input selector
+                // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
                 selector: '*[required]',
 
-                callback: function (complete, totalRequired, totalIncomplete, val) {
+                // Some action to take when the form is complete/valid.
+                callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
+                    // Show the Submit button if th eform is complete.
                     if (complete) {
-                        val.$utils.show(d.querySelector('#form_container .btn-submit'));
+                        $smartValidator.$utils.show(d.querySelector('#form_container .btn-submit'));
                     }
                     else {
-                        val.$utils.hide(d.querySelector('#form_container .btn-submit'));
-                        //console.warn(arguments);
+                        $smartValidator.$utils.hide(d.querySelector('#form_container .btn-submit'));
                     }
                 },
 
-                interval: 500
-            });
+                // The interval (in milliseconds) to run the validator
+                interval: 100
+            };
+            
+            // Our test Angular app
+            angular.module('app', ['app.controllers', 'smart.validator']);
+            
+            // For Angular frameworks, inject `$smartValidator` into your controller 
+            // and call the `init` method with the form ID or form element, plus optional setting overrides.
+            angular.module('app.controllers', [])
+                .controller('testCtrl', ['$smartValidator', function($smartValidator){
+                    $smartValidator.init('form_container', opts);
+                }]);
+            
+            // Simply instantiate `SmartValidator` for non-Angular frameworks
+            // var sv = new SmartValidator('form_container', opts);
 
         })(window, document);
     </script>

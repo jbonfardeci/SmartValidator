@@ -6,11 +6,27 @@
  * 
  * Dependencies: Bootstrap CSS (but you can use your own class names)
  */
+'use strict';
 
-function SmartValidator(container, opts) {
-    var self = this;
+// If this is used in an Angular app, setup the `$smartValidator` module.
+(function(angular){
+    if(!!!angular){return;}
     
-    this.container = container.constructor == String ? document.getElementById(container) : container;
+    angular.module('smart.validator', [])
+        .factory('$smartValidator', ['$interval', function($interval){
+            return new SmartValidator($interval);
+        }]);
+    
+})(window['angular'] || undefined);
+
+function SmartValidator($interval) {
+    //Sanity check
+    if(!this instanceof SmartValidator){
+        throw 'SmartValidator must be instantiated with `new`.';
+    }
+    if($interval === void 0){ $interval = setInterval; }
+    this.container;
+    this.$interval = $interval;
     
     // Default templates utilize Bootstrap icons but you can modify them to use your own.
     this.settings = {
@@ -18,7 +34,7 @@ function SmartValidator(container, opts) {
         callback: function(complete, totalRequired, totalIncomplete, self){
             // Do something, such as show a submit button, if all fields are valid.
         },
-        interval: 1000,
+        interval: 100,
         templates: {
             validClass: 'glyphicon-ok',
             invalidClass: 'glyphicon-exclamation-sign',
@@ -28,19 +44,37 @@ function SmartValidator(container, opts) {
             warningSign: '&#x2757' // HTML ASCII exclamation point
         }
     };
-
-    this.$utils.extend(this.settings, opts);
-    
-    this.isComplete = false;
-
-    this.intervalId = setInterval(function () {
-        self.checkRequiredFields();
-        self.validateFields();
-    }, this.settings.interval);
 };
 
 SmartValidator.prototype = {
+    _kill: function(intervalId){
+        if (intervalId === void 0) { intervalId = undefined; }
+        
+        //for Angular $interval cancel method
+        if(this.$interval.cancel){
+            return this.$interval.cancel();
+        }
+        
+        if(!!intervalId){
+            clearInterval(intervalId);
+            return true;
+        }
+        return false;
+    },
     
+    init: function(container, opts){
+        if (opts === void 0) { opts = {}; }
+        
+        var self = this;
+        this.$utils.extend(this.settings, opts);
+        this.container = this.$utils.id(container);
+
+        return this.$interval(function () {
+            self.checkRequiredFields();
+            self.validateFields();
+        }, this.settings.interval);
+    },
+
     $utils: {
         each: function (a, callback, i) {
             i = i || 0;
@@ -200,12 +234,6 @@ SmartValidator.prototype = {
         complete = totalRequired - incompleteCount == totalRequired;
         this.isComplete = complete;
         this.settings.callback(complete, totalRequired, incompleteCount, self);
-    },
-    
-    checkIncomplete: function () {
-        var self = this;
-        var $ = this.$utils;
-       
     },
     
     validateFields: function () {

@@ -52,7 +52,7 @@ angular.module('app', ['smart.validator'])
 
 var sv = new SmartValidator();
 
-var btnSubmit = document.getElementById('#btn-submit');
+var btnSubmit = document.getElementById('btn-submit');
 
 var opts = {
     // Overrides for required input selector

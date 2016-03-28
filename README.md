@@ -1,6 +1,9 @@
 # SmartValidator
 A JavaScript validator that works with dynamic form elements created by MV* frameworks such as KnockoutJS and AngularJS.
 
+##Install
+`bower install smartvalidator`
+
 ##Usage
 ```
 // For Angular frameworks, inject `$smartValidator` into your controller 

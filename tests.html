@@ -6,7 +6,7 @@
     <title>Smart Validator for Angular Forms</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
     <style>
-        .error{ color: #f00;display: inline-block; margin:0 .5em;}
+        .error{ color: red;display: inline-block; margin:0 .5em;}
         .error.glyphicon-ok{
             color: green !important;
         }
@@ -111,7 +111,7 @@
                     };
                     
                     // Initialize the validator
-                    $smartValidator.init('form_container', opts);
+                    $smartValidator.validate('form_container', opts);
                     
                 }]);
             

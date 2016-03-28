@@ -35,7 +35,7 @@
             return new SmartValidator($interval);
         }]);
     
-})(window['angular'] || undefined);
+})(window.angular || undefined);
 
 function SmartValidator($interval) {
     //Sanity check
@@ -58,8 +58,8 @@ function SmartValidator($interval) {
             invalidClass: 'glyphicon-exclamation-sign',
             required: '<span class="error glyphicon glyphicon-exclamation-sign"></span>',
             validation: '<span class="error validation" style="display:none;">{0}</span>',
-            okSign: '&#x2714', // HTML ASCII check mark
-            warningSign: '&#x2757' // HTML ASCII exclamation point
+            okSign: '&#x2714;', // HTML ASCII check mark
+            warningSign: '&#x2757;' // HTML ASCII exclamation point
         }
     };
 };
@@ -80,7 +80,7 @@ SmartValidator.prototype = {
         return false;
     },
     
-    init: function(container, opts){
+    validate: function(container, opts){
         if (opts === void 0) { opts = {}; }
         
         var self = this;
@@ -97,31 +97,10 @@ SmartValidator.prototype = {
     },
 
     $utils: {
-        each: function (a, callback, i) {
-            i = i || 0;
-            for (; i < a.length; i++) {
-                callback(a[i], i);
-            }
-        },
-
         id: function (id) {
             return typeof (id) == 'string' ? document.getElementById(id) : id;
         },
     
-        byClass: function (name, type) {
-            var r = []
-                , rx = new RegExp('(^|\\s)' + name + '(\\s|$)')
-                , elements = document.getElementsByTagName(type || '*');
-
-            this.each(elements, function (e) {
-                if (rx.test(e.className.toString())) {
-                    r.push(e);
-                }
-            });
-
-            return r;
-        },
-        
         addClass: function(el, className){
             var cn = el.className.split(' ');
             if (cn.indexOf(className) > -1) { return el; }
@@ -148,13 +127,6 @@ SmartValidator.prototype = {
             return el;
         },
         
-        extend: function (first, second) {
-            for (var prop in second) {
-                first[prop] = second[prop];
-            }
-            return first;
-        },
-
         show: function (el) {
             el.style.display = null;
             return el;
@@ -165,21 +137,10 @@ SmartValidator.prototype = {
             return el;
         },
 
-        makeArray: function(els){
+        toArray: function(els){
             return Array.prototype.slice.call(els);
         },
 
-        filter: function(a, cb){
-            var b = [];
-            var i = 0;
-            for(; i < a.length; i++){
-                if(cb(a[i])){
-                    b.push(a[i]);
-                }
-            }
-            return b;
-        },
-    
         trim: function(val){
             return (val+'').replace(/(^\s+|\s+$)/g, '');
         },
@@ -208,18 +169,17 @@ SmartValidator.prototype = {
     checkRequiredFields: function (self) {
         if(self === void 0){ self = this; }
         var $ = this.$utils;
-        var required = this.container.querySelectorAll(self.settings.selector);
+        var required = $.toArray(this.container.querySelectorAll(self.settings.selector));
         var templates = self.settings.templates;
         var totalRequired = 0;
         var totalIncomplete = 0;
         var complete = false;
-        var incompleteCount = $.filter(required,
-            function (el) {
+        var incompleteCount = required.filter(function (el) {
                 return $.needsValue(el, self.container);
             }).length;
         var isValid = self.validateFields(self);
-
-        $.each(required, function (el) {
+        
+        required.forEach(function(el, i){
             if (!!!el.$$error) {
                 el.$$error = $.after(templates.required, el);
             }
@@ -243,9 +203,9 @@ SmartValidator.prototype = {
         if(self === void 0){ self = this; }
         var errorCt = 0;
         var $ = this.$utils;
-        var inputs = self.container.querySelectorAll('input.email,input.phone,input.ssn,input.zip,input.date');
+        var inputs = $.toArray(self.container.querySelectorAll('input.email,input.phone,input.ssn,input.zip,input.date'));
         
-        $.each(inputs, function (el) {
+        inputs.forEach(function(el){
             var val = el.value;
             var validator = self.rxValidators.exec(el.className)[0];
             var invalidText = 'Invalid ' + validator.replace(/^\w/, function (s) {

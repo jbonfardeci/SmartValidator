@@ -41,7 +41,7 @@ angular.module('app', ['smart.validator'])
         };
         
         // Initialize the validator
-        $smartValidator.init('form_container', opts);
+        $smartValidator.validate('form_container', opts);
         
     }]);
 

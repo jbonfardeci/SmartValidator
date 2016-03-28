@@ -85,6 +85,27 @@ var intervalId = sv.validate(/*element/id*/'form_container', /*opts:*/ opts);
 ###Example Form
 ![Example Form](sample_form.png "Example Form")
 
+###Validate Input Formatting
+To validate the formatting of email, phone, SSN, zip code, or date fields add the corresponding class names to each input element:
+ * email
+ * phone
+ * ssn
+ * zip
+ * date
+ 
+ For example: 
+ ```
+     <input name="Email" class="email" />
+ 
+     <input name="Phone" class="phone" />
+     
+     <input name="Date" class="date" />
+     
+     <input name="SSN" class="ssn" />
+     
+     <input name="Zip" class="zip" />
+ ```
+
 ###Copyright
 The MIT License (MIT)
     

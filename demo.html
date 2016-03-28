@@ -5,11 +5,8 @@
     <meta charset="utf-8" />
     <title>Smart Validator for Angular Forms</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="smart.validator-0.0.1.css" rel="stylesheet" />
     <style>
-        .error{ color: red;display: inline-block; margin:0 .5em;}
-        .error.glyphicon-ok{
-            color: green !important;
-        }
         .form-control{
             display: inline-block;
             max-width: 80%;
@@ -20,7 +17,7 @@
 
     <div ng-controller="contactCtrl" class="container">
         <h4>Example Form with Smart Validator for AngularJS</h4>
-        <p><span class="error glyphicon glyphicon-exclamation-sign"></span> indicates required fields.</p>
+        <p><span class="required incomplete">!</span> indicates required fields.</p>
         <form id="form_container">
             <div class="form-group">
                 <label class="control-label" for="FullName">Your Full Name:</label>
@@ -68,7 +65,7 @@
     
     <!-- Angular -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js"></script>
-    <script src="smart.validator.js"></script>
+    <script src="smart.validator-0.0.1.js"></script>
     
     <script>
         (function (w, d) {

@@ -54,17 +54,19 @@ function SmartValidator($interval) {
         },
         interval: 100,
         templates: {
-            validClass: 'glyphicon-ok',
-            invalidClass: 'glyphicon-exclamation-sign',
-            required: '<span class="error glyphicon glyphicon-exclamation-sign"></span>',
-            validation: '<span class="error validation" style="display:none;">{0}</span>',
-            okSign: '&#x2714;', // HTML ASCII check mark
-            warningSign: '&#x2757;' // HTML ASCII exclamation point
+            validClass: 'ok',
+            invalidClass: 'incomplete',
+            required: '<span class="required incomplete"></span>',
+            validation: '<span class="validation" style="display:none;">{0}</span>',
+            completeSign: '&#x2714', // HTML ASCII check mark
+            incompleteSign: '!' // HTML ASCII exclamation point
         }
     };
 };
 
 SmartValidator.prototype = {
+    version: '0.0.1', 
+    
     _kill: function(intervalId){
         if (intervalId === void 0) { intervalId = undefined; }
         
@@ -86,7 +88,7 @@ SmartValidator.prototype = {
         var self = this;
         
         for(var p in opts){
-            this.settings[p] =opts[p];
+            this.settings[p] = opts[p];
         }
         
         this.container = this.$utils.id(container);
@@ -180,17 +182,19 @@ SmartValidator.prototype = {
         var isValid = self.validateFields(self);
         
         required.forEach(function(el, i){
-            if (!!!el.$$error) {
-                el.$$error = $.after(templates.required, el);
+            if (!!!el.$$required) {
+                el.$$required = $.after(templates.required, el);
             }
 
-            if ($.getValue(el) == '') {
-                $.removeClass(el.$$error, templates.validClass);
-                $.addClass(el.$$error, templates.invalidClass);
+            if ($.needsValue(el, self.container)) {
+                $.removeClass(el.$$required, templates.validClass);
+                $.addClass(el.$$required, templates.invalidClass);
+                el.$$required.innerHTML = templates.incompleteSign;
             }
             else {
-                $.removeClass(el.$$error, templates.invalidClass);
-                $.addClass(el.$$error, templates.validClass);
+                $.removeClass(el.$$required, templates.invalidClass);
+                $.addClass(el.$$required, templates.validClass);
+                el.$$required.innerHTML = templates.completeSign;
             }
         });
 

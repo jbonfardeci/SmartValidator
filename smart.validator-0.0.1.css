@@ -1,0 +1,19 @@
+.required{
+    font-weight: bold;
+    margin: 0 5px;
+    color: white;
+    display: inline-block;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 1em;
+    width: 20px;
+    height: 20px;
+    line-height: 1.4em;
+}
+.required.incomplete {
+    background-color: #d9534f;
+}
+.required.ok{
+    background-color:green;
+}
+.validation{color: #d9534f;}

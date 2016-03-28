@@ -60,14 +60,14 @@ var opts = {
     selector: '*[required]',
 
     // Some action to take when the form is complete/valid.
-    callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
+    callback: function (complete, totalRequired, totalIncomplete, smartValidator) {
         // Show the Submit button if the form is complete.
         
         if(complete){
-            $smartValidator.$utils.show(btnSubmit);
+            smartValidator.$utils.show(btnSubmit);
         }
         else{
-            $smartValidator.$utils.hide(btnSubmit);
+            smartValidator.$utils.hide(btnSubmit);
         }
     },
 

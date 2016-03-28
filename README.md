@@ -44,12 +44,39 @@ angular.module('app', ['smart.validator'])
         $smartValidator.validate('form_container', opts);
         
     }]);
+```
 
+###Vanilla JS
+```
 // Simply instantiate `SmartValidator` for non-Angular frameworks
-if(!angular){
-    //var sv = new SmartValidator();
-    //sv.init(/*element/id*/'form_container', /*opts:*/ {});
-}
+
+var sv = new SmartValidator();
+
+var btnSubmit = document.getElementById('#btn-submit');
+
+var opts = {
+    // Overrides for required input selector
+    // The default is `*.required,*[required],*[data-required],*[data-ng-required],*[ng-required]`
+    selector: '*[required]',
+
+    // Some action to take when the form is complete/valid.
+    callback: function (complete, totalRequired, totalIncomplete, $smartValidator) {
+        // Show the Submit button if the form is complete.
+        
+        if(complete){
+            $smartValidator.$utils.show(btnSubmit);
+        }
+        else{
+            $smartValidator.$utils.hide(btnSubmit);
+        }
+    },
+
+    // The interval (in milliseconds) to run the validator
+    interval: 100
+};
+        
+var intervalId = sv.validate(/*element/id*/'form_container', /*opts:*/ opts);
+
 ```
 
 ###Example Form

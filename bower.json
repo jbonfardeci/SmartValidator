@@ -1,0 +1,20 @@
+{
+  "name": "SmartValidator",
+  "homepage": "https://github.com/jbonfardeci/SmartValidator",
+  "authors": [
+    "John Bonfardeci <john.bonfardeci@gmail.com>"
+  ],
+  "description": "\"A lightweight required field and formatting validator for Angular or vanilla JS forms.\"",
+  "main": "smart.validator-0.0.1.js",
+  "moduleType": [],
+  "keywords": [
+    "angular",
+    "javascript",
+    "form",
+    "validator",
+    "validation",
+    "required",
+    "fields"
+  ],
+  "license": "MIT"
+}

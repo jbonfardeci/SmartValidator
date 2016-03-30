@@ -1,5 +1,5 @@
 {
-  "name": "SmartValidator",
+  "name": "smartvalidator",
   "version": "1.0.0",
   "description": "A lightweight required field and formatting validator for dynamic elements as used by frameworks such as AngularJS and KnockoutJS.",
   "main": "smart.validator-0.0.1.js",

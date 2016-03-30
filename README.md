@@ -2,6 +2,12 @@
 A JavaScript validator that works with dynamic form elements created by MV* frameworks such as KnockoutJS and AngularJS.
 
 ##Install
+In your shell/command window, CD to your project directory, then type:
+
+`npm install smartvalidator`
+
+or
+
 `bower install smartvalidator`
 
 ##Usage

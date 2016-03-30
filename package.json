@@ -1,0 +1,31 @@
+{
+  "name": "SmartValidator",
+  "version": "1.0.0",
+  "description": "A lightweight required field and formatting validator for dynamic elements as used by frameworks such as AngularJS and KnockoutJS.",
+  "main": "smart.validator-0.0.1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbonfardeci/SmartValidator.git"
+  },
+  "keywords": [
+    "validator",
+    "validation",
+    "angular",
+    "knockout",
+    "required",
+    "fields",
+    "formatting",
+    "lightweight",
+    "dynamic",
+    "$interval"
+  ],
+  "author": "John Bonfardeci <john.bonfardeci@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jbonfardeci/SmartValidator/issues"
+  },
+  "homepage": "https://github.com/jbonfardeci/SmartValidator"
+}

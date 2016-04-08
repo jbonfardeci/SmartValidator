@@ -6,7 +6,7 @@
  * Why another form validator? Because this one will validate input elements that will be added to the DOM in the future. 
  * Frameworks such as AngularJS and KnockoutJS dynamically add/remove elements from the DOM with IF statements.
  * 
- * Dependencies: Bootstrap CSS (but you can use your own class names)
+ * Dependencies: zip, zilch, nada, nil
  * 
  * ###Copyright
     The MIT License (MIT)

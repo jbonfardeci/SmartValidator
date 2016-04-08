@@ -1,4 +1,4 @@
-.required {
+.sm-required {
     font-weight: bold;
     margin: 0 5px;
     color: white;
@@ -14,12 +14,12 @@
     top: 50%;
     right: 5px;
 }
-.required.incomplete {
+.sm-required.incomplete {
     background-color: #d9534f;
 }
-.required.ok {
+.sm-required.ok {
     background-color:green;
 }
-.validation {
+.sm-validation {
     color: #d9534f;
 }

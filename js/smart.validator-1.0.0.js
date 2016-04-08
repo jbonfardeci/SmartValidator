@@ -56,8 +56,8 @@ function SmartValidator($interval) {
         templates: {
             validClass: 'ok',
             invalidClass: 'incomplete',
-            required: '<span class="required incomplete"></span>',
-            validation: '<span class="validation" style="display:none;">{0}</span>',
+            required: '<span class="sm-required incomplete"></span>',
+            validation: '<span class="sm-validation" style="display:none;">{0}</span>',
             completeSign: '&#x2714', // HTML ASCII check mark
             incompleteSign: '!' // HTML ASCII exclamation point
         }

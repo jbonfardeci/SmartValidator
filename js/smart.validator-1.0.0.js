@@ -171,6 +171,9 @@ SmartValidator.prototype = {
     checkRequiredFields: function (self) {
         if(self === void 0){ self = this; }
         var $ = this.$utils;
+        if(!!!this.container){
+            return;
+        }
         var required = $.toArray(this.container.querySelectorAll(self.settings.selector));
         var templates = self.settings.templates;
         var totalRequired = 0;
